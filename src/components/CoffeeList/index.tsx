@@ -1,27 +1,28 @@
+import { useContext } from 'react'
 import { Coffee } from './components/Coffee'
-import TraditionalExpress from '../../assets/traditional-express.svg'
 import { CoffeeListContainer, CoffeeTitle, CoffeeListItems } from './styles'
+import { CoffeesContext } from '../../contexts/CoffeesContext'
 
 export function CoffeList() {
+  const { coffees } = useContext(CoffeesContext)
   return (
     <CoffeeListContainer>
       <CoffeeTitle>Nossos Cafés</CoffeeTitle>
 
       <CoffeeListItems>
-        <Coffee
-          img={TraditionalExpress}
-          tags={['Tradicional']}
-          name="Expresso Tradicional"
-          description="O tradicional café feito com água quente e grãos moídos"
-          price={9.9}
-        />
-        <Coffee
-          img={TraditionalExpress}
-          tags={['Tradicional']}
-          name="Expresso Americano"
-          description="Expresso diluído, menos intenso que o tradicional"
-          price={9.9}
-        />
+        {coffees.map((coffee) => {
+          return (
+            <Coffee
+              key={coffee.id}
+              id={coffee.id}
+              img={coffee.image}
+              tags={coffee.tags}
+              name={coffee.title}
+              description={coffee.description}
+              price={coffee.price.toFixed(2)}
+            />
+          )
+        })}
       </CoffeeListItems>
     </CoffeeListContainer>
   )

@@ -27,13 +27,14 @@ export const Location = styled.div`
   border-radius: 8px;
 `
 
-export const Cart = styled.div`
+export const Cart = styled.a`
   background-color: ${(props) => props.theme.colors['yellow-light']};
   color: ${(props) => props.theme.colors['yellow-dark']};
   padding: 8px;
   border-radius: 8px;
   max-height: 38px;
   position: relative;
+  cursor: pointer;
 
   span {
     position: absolute;

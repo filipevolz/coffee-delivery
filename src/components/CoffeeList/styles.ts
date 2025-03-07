@@ -14,5 +14,5 @@ export const CoffeeTitle = styled.h2`
 export const CoffeeListItems = styled.ul`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 40px 32px;
+  gap: 60px 32px;
 `

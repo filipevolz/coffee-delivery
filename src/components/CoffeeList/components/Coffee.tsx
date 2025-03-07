@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Minus, Plus, ShoppingCart } from 'phosphor-react'
+import { useContext, useState } from 'react'
+import { ShoppingCart } from 'phosphor-react'
 import {
   CoffeContainer,
   TagsList,
@@ -9,22 +9,38 @@ import {
   CoffeeFooter,
   CofferPrice,
   ButtonsActions,
-  CofferCounter,
   CartButton,
 } from './styles'
+import { BtnCounter } from '../../BtnCounter'
+import { CoffeesContext } from '../../../contexts/CoffeesContext'
 
 interface CoffeeProps {
+  id: string
   img: string
   tags: string[]
   name: string
   description: string
   price: number
 }
-export function Coffee({ img, tags, name, description, price }: CoffeeProps) {
-  const [countCoffe, setCountCoffe] = useState(1)
+export function Coffee({
+  id,
+  img,
+  tags,
+  name,
+  description,
+  price,
+}: CoffeeProps) {
+  const [quantity, setQuantity] = useState(1)
+  const { addToCart } = useContext(CoffeesContext)
+
+  function handleAddToCart() {
+    console.log('Adicionando ao carrinho:', { id, quantity })
+    addToCart(id, quantity)
+  }
+
   return (
     <CoffeContainer>
-      <img src={img} alt="Expresso Tradicional" />
+      <img src={img} alt={name} />
       <TagsList>
         {tags.map((tag) => {
           return <TagsItem key={tag}>{tag}</TagsItem>
@@ -37,16 +53,8 @@ export function Coffee({ img, tags, name, description, price }: CoffeeProps) {
           R$ <span>{price}</span>
         </CofferPrice>
         <ButtonsActions>
-          <CofferCounter>
-            <button onClick={() => setCountCoffe(countCoffe - 1)}>
-              <Minus size={14} weight="bold" />
-            </button>
-            <span>{countCoffe}</span>
-            <button onClick={() => setCountCoffe(countCoffe + 1)}>
-              <Plus size={14} weight="bold" />
-            </button>
-          </CofferCounter>
-          <CartButton>
+          <BtnCounter quantity={quantity} setQuantity={setQuantity} />
+          <CartButton onClick={handleAddToCart}>
             <ShoppingCart size={22} weight="fill" />
           </CartButton>
         </ButtonsActions>

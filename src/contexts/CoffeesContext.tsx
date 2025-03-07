@@ -1,0 +1,67 @@
+import { createContext, useEffect, useState } from 'react'
+import data from '../../data.json'
+
+export interface Coffee {
+  id: string
+  title: string
+  description: string
+  tags: string[]
+  price: number
+  image: string
+}
+
+export interface CartItem {
+  id: string
+  quantity: number
+}
+
+interface CoffeesContextType {
+  coffees: Coffee[]
+  cart: CartItem[]
+  addToCart: (id: string, quantity: number) => void
+  removeFromCart: (id: string) => void
+}
+
+export const CoffeesContext = createContext({} as CoffeesContextType)
+
+interface CoffeesContextProviderProps {
+  children: React.ReactNode
+}
+export function CoffeesContextProvider({
+  children,
+}: CoffeesContextProviderProps) {
+  const coffees: Coffee[] = data.coffees
+  const [cart, setCart] = useState<CartItem[]>([])
+
+  function addToCart(id: string, quantity: number) {
+    setCart((prevCart) => {
+      const itemExists = prevCart.find((item) => item.id === id)
+      const updatedCart = itemExists
+        ? prevCart.map((item) =>
+            item.id === id
+              ? { ...item, quantity: item.quantity + quantity }
+              : item,
+          )
+        : [...prevCart, { id, quantity }]
+      localStorage.setItem('cart', JSON.stringify(updatedCart))
+      return updatedCart
+    })
+  }
+
+  useEffect(() => {
+    const localCart = JSON.parse(localStorage.getItem('cart') || '[]')
+    setCart(localCart)
+  }, [])
+
+  function removeFromCart(id: string) {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id))
+  }
+
+  return (
+    <CoffeesContext.Provider
+      value={{ coffees, cart, addToCart, removeFromCart }}
+    >
+      {children}
+    </CoffeesContext.Provider>
+  )
+}

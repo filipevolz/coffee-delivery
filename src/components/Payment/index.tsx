@@ -7,12 +7,25 @@ import {
   PaymentOption,
 } from './styles'
 import { useState } from 'react'
+import { FieldError, UseFormSetValue } from 'react-hook-form'
+import { CreateOrderFormData } from '../../pages/Cart'
+import { Error } from '../Address/styles'
 
 type PaymentOptionType = 'credit' | 'debit' | 'money'
 
-export function Payment() {
+interface PaymentProps {
+  setValue: UseFormSetValue<CreateOrderFormData>
+  error?: FieldError | undefined
+}
+
+export function Payment({ setValue, error }: PaymentProps) {
   const [selectedOption, setSelectedOption] =
     useState<PaymentOptionType | null>(null)
+
+  const handleOptionSelect = (option: PaymentOptionType) => {
+    setSelectedOption(option)
+    setValue('paymentMethod', option)
+  }
   return (
     <PaymentContainer>
       <PaymentHeader>
@@ -26,7 +39,9 @@ export function Payment() {
       </PaymentHeader>
       <PaymentOptions>
         <PaymentOption
-          onClick={() => setSelectedOption('credit')}
+          onClick={() => {
+            handleOptionSelect('credit')
+          }}
           style={{
             border: selectedOption === 'credit' ? '1px solid #8047F8' : '',
             backgroundColor: selectedOption === 'credit' ? '#EBE5F9' : '',
@@ -36,7 +51,9 @@ export function Payment() {
           <span>Cartão de crédito</span>
         </PaymentOption>
         <PaymentOption
-          onClick={() => setSelectedOption('debit')}
+          onClick={() => {
+            handleOptionSelect('debit')
+          }}
           style={{
             border: selectedOption === 'debit' ? '1px solid #8047F8' : '',
             backgroundColor: selectedOption === 'debit' ? '#EBE5F9' : '',
@@ -46,7 +63,9 @@ export function Payment() {
           <span>Cartão de débito</span>
         </PaymentOption>
         <PaymentOption
-          onClick={() => setSelectedOption('money')}
+          onClick={() => {
+            handleOptionSelect('money')
+          }}
           style={{
             border: selectedOption === 'money' ? '1px solid #8047F8' : '',
             backgroundColor: selectedOption === 'money' ? '#EBE5F9' : '',
@@ -56,6 +75,11 @@ export function Payment() {
           <span>Dinheiro</span>
         </PaymentOption>
       </PaymentOptions>
+      {error && (
+        <Error style={{ textAlign: 'center', fontSize: '1rem' }}>
+          Selecione a forma de pagamento.
+        </Error>
+      )}
     </PaymentContainer>
   )
 }

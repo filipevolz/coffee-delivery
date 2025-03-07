@@ -15,45 +15,54 @@ import { BtnCounter } from '../../BtnCounter'
 import { CoffeesContext } from '../../../contexts/CoffeesContext'
 
 interface CoffeeProps {
-  id: string
-  img: string
-  tags: string[]
-  name: string
-  description: string
-  price: number
+  coffee: {
+    id: string
+    image: string
+    tags: string[]
+    title: string
+    description: string
+    price: number
+  }
 }
-export function Coffee({
-  id,
-  img,
-  tags,
-  name,
-  description,
-  price,
-}: CoffeeProps) {
-  const [quantity, setQuantity] = useState(1)
+export function Coffee({ coffee }: CoffeeProps) {
   const { addToCart } = useContext(CoffeesContext)
 
+  const [quantity, setQuantity] = useState(1)
+
+  function incrementQuantity() {
+    setQuantity((state) => state + 1)
+  }
+
+  function decrementQuantity() {
+    if (quantity > 1) {
+      setQuantity((state) => state - 1)
+    }
+  }
+
   function handleAddToCart() {
-    console.log('Adicionando ao carrinho:', { id, quantity })
-    addToCart(id, quantity)
+    addToCart(coffee.id, quantity)
   }
 
   return (
     <CoffeContainer>
-      <img src={img} alt={name} />
+      <img src={coffee.image} alt={coffee.title} />
       <TagsList>
-        {tags.map((tag) => {
+        {coffee.tags.map((tag) => {
           return <TagsItem key={tag}>{tag}</TagsItem>
         })}
       </TagsList>
-      <CoffeTitle>{name}</CoffeTitle>
-      <CoffeDescription>{description}</CoffeDescription>
+      <CoffeTitle>{coffee.title}</CoffeTitle>
+      <CoffeDescription>{coffee.description}</CoffeDescription>
       <CoffeeFooter>
         <CofferPrice>
-          R$ <span>{price}</span>
+          R$ <span>{coffee.price.toFixed(2)}</span>
         </CofferPrice>
         <ButtonsActions>
-          <BtnCounter quantity={quantity} setQuantity={setQuantity} />
+          <BtnCounter
+            quantity={quantity}
+            incrementQuantity={incrementQuantity}
+            decrementQuantity={decrementQuantity}
+          />
           <CartButton onClick={handleAddToCart}>
             <ShoppingCart size={22} weight="fill" />
           </CartButton>

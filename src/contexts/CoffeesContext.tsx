@@ -19,6 +19,7 @@ interface CoffeesContextType {
   coffees: Coffee[]
   cart: CartItem[]
   addToCart: (id: string, quantity: number) => void
+  updateCart: (id: string, quantity: number) => void
   removeFromCart: (id: string) => void
 }
 
@@ -43,23 +44,55 @@ export function CoffeesContextProvider({
               : item,
           )
         : [...prevCart, { id, quantity }]
-      localStorage.setItem('cart', JSON.stringify(updatedCart))
+      localStorage.setItem(
+        '@ignite-coffee-delivery:coffees-state-1.0.0',
+        JSON.stringify(updatedCart),
+      )
       return updatedCart
     })
   }
 
   useEffect(() => {
-    const localCart = JSON.parse(localStorage.getItem('cart') || '[]')
+    const localCart = JSON.parse(
+      localStorage.getItem('@ignite-coffee-delivery:coffees-state-1.0.0') ||
+        '[]',
+    )
     setCart(localCart)
   }, [])
 
+  function updateCart(id: string, quantity: number) {
+    setCart((prevCart) => {
+      const updatedCart = prevCart.map((item) =>
+        item.id === id ? { ...item, quantity } : item,
+      )
+      localStorage.setItem(
+        '@ignite-coffee-delivery:coffees-state-1.0.0',
+        JSON.stringify(updatedCart),
+      )
+      return updatedCart
+    })
+  }
+
   function removeFromCart(id: string) {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id))
+    setCart((prevCart) => {
+      const updatedCart = prevCart.filter((item) => item.id !== id)
+      localStorage.setItem(
+        '@ignite-coffee-delivery:coffees-state-1.0.0',
+        JSON.stringify(updatedCart),
+      )
+      return updatedCart
+    })
   }
 
   return (
     <CoffeesContext.Provider
-      value={{ coffees, cart, addToCart, removeFromCart }}
+      value={{
+        coffees,
+        cart,
+        addToCart,
+        updateCart,
+        removeFromCart,
+      }}
     >
       {children}
     </CoffeesContext.Provider>

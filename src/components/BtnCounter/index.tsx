@@ -3,18 +3,14 @@ import { CofferCounter } from './styles'
 
 interface BtnCounterProps {
   quantity: number
-  setQuantity: React.Dispatch<React.SetStateAction<number>>
+  incrementQuantity: () => void
+  decrementQuantity: () => void
 }
-export function BtnCounter({ quantity, setQuantity }: BtnCounterProps) {
-  function incrementQuantity() {
-    setQuantity((state: number) => state + 1)
-  }
-
-  function decrementQuantity() {
-    if (quantity > 1) {
-      setQuantity((state) => state - 1)
-    }
-  }
+export function BtnCounter({
+  quantity,
+  incrementQuantity,
+  decrementQuantity,
+}: BtnCounterProps) {
   return (
     <CofferCounter>
       <button onClick={decrementQuantity}>

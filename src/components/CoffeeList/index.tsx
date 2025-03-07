@@ -11,17 +11,7 @@ export function CoffeList() {
 
       <CoffeeListItems>
         {coffees.map((coffee) => {
-          return (
-            <Coffee
-              key={coffee.id}
-              id={coffee.id}
-              img={coffee.image}
-              tags={coffee.tags}
-              name={coffee.title}
-              description={coffee.description}
-              price={coffee.price.toFixed(2)}
-            />
-          )
+          return <Coffee key={coffee.id} coffee={coffee} />
         })}
       </CoffeeListItems>
     </CoffeeListContainer>

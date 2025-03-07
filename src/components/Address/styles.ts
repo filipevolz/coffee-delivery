@@ -30,55 +30,67 @@ export const AddressInputs = styled.div`
   grid-template-rows: auto auto auto auto;
   gap: 8px;
 
-  & > input:nth-child(1) {
+  & > :first-child {
+    grid-column: 1 / 2;
+    grid-row: 1;
+  }
+
+  & > :nth-child(2) {
+    grid-column: 1 / 4;
+    grid-row: 2;
+  }
+
+  & > :nth-child(3) {
+    grid-column: 1 / 2;
+    grid-row: 3;
+  }
+
+  & > :nth-child(4) {
+    grid-column: 2 / 4;
+    grid-row: 3;
+  }
+
+  & > :nth-child(5),
+  & > :nth-child(6),
+  & > :nth-child(7) {
     grid-column: span 1;
+    grid-row: 4;
+  }
+`
+
+export const InputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`
+
+export const ComplementContainer = styled.div`
+  display: flex;
+  align-items: center;
+  padding-right: 12px;
+  grid-column: span 2;
+  background-color: ${(props) => props.theme.colors['base-input']};
+  border: none;
+  border-radius: 4px;
+  border: 1px solid ${(props) => props.theme.colors['base-button']};
+
+  &:focus-within {
+    border: 1px solid ${(props) => props.theme.colors['yellow-dark']};
   }
 
-  & > input:nth-child(2) {
-    grid-column: span 3;
-  }
-
-  & > div {
-    display: flex;
-    align-items: center;
-    padding-right: 12px;
-    grid-column: span 2;
-    background-color: ${(props) => props.theme.colors['base-input']};
-    border: none;
-    border-radius: 4px;
-    border: 1px solid ${(props) => props.theme.colors['base-button']};
-
-    &:focus-within {
-      border: 1px solid ${(props) => props.theme.colors['yellow-dark']};
-    }
-
-    input {
-      border: none;
-
-      &:focus {
-        border: none;
-      }
-    }
-
-    em {
-      color: ${(props) => props.theme.colors['base-label']};
-      font-size: 14px;
-      font-weight: 500;
-    }
-  }
-
-  & > div > input:first-child {
+  input {
     flex: 1;
+    border: none;
+
+    &:focus {
+      border: none;
+    }
   }
 
-  & > div > input:last-child {
-    flex: 2;
-  }
-
-  & > input:nth-child(4),
-  & > input:nth-child(5),
-  & > input:nth-child(6) {
-    grid-column: span 1;
+  em {
+    color: ${(props) => props.theme.colors['base-label']};
+    font-size: 14px;
+    font-weight: 500;
   }
 `
 
@@ -98,4 +110,9 @@ export const AddressInput = styled.input`
     outline: none;
     border: 1px solid ${(props) => props.theme.colors['yellow-dark']};
   }
+`
+
+export const Error = styled.span`
+  font-size: 0.75rem;
+  color: red;
 `

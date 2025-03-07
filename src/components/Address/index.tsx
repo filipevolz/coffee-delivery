@@ -1,57 +1,47 @@
-import axios from 'axios'
-
 import {
   AddressHeader,
   AddressInfo,
   AddressInputs,
   MapIcon,
   AddressInput,
+  ComplementContainer,
+  InputContainer,
+  Error,
 } from './styles'
-import { useEffect, useState } from 'react'
+import {
+  UseFormRegister,
+  UseFormWatch,
+  UseFormSetValue,
+  FieldError,
+} from 'react-hook-form'
+import { CreateOrderFormData } from '../../pages/Cart'
+import { useEffect } from 'react'
+import axios from 'axios'
 
 interface AddressProps {
-  zipCode: string
-  street: string
-  number: string
-  complement?: string
-  neighborhood: string
-  city: string
-  state: string
+  register: UseFormRegister<CreateOrderFormData>
+  watch: UseFormWatch<CreateOrderFormData>
+  setValue: UseFormSetValue<CreateOrderFormData>
+  error?: Partial<Record<keyof CreateOrderFormData['address'], FieldError>>
 }
 
-export function Address() {
-  const [address, setAddress] = useState<AddressProps>({
-    zipCode: '',
-    street: '',
-    number: '',
-    complement: '',
-    neighborhood: '',
-    city: '',
-    state: '',
-  })
-
-  const zipCodeMask = (value: string) => {
-    if (!value) return ''
-    value = value.replace(/\D/g, '')
-    value = value.replace(/(\d{5})(\d)/, '$1-$2')
-    return value
-  }
+export function Address({ register, watch, setValue, error }: AddressProps) {
+  const cep = watch('address.cep')
+  const complement = watch('address.complement')
 
   async function getAddress(zipCode: string) {
-    const cleanedZipCode = zipCode.replace(/\D/g, '')
     const response = await axios.get(
-      `https://viacep.com.br/ws/${cleanedZipCode}/json/`,
+      `https://viacep.com.br/ws/${zipCode}/json/`,
     )
-    if (response.status === 200) {
-      return setAddress({
-        zipCode: response.data.cep,
-        street: response.data.logradouro,
-        number: '',
-        complement: '',
-        neighborhood: response.data.bairro,
-        city: response.data.localidade,
-        state: response.data.uf,
-      })
+    const data = response.data
+    if (data) {
+      setValue('address.cep', data.cep)
+      setValue('address.street', data.logradouro)
+      setValue('address.number', '')
+      setValue('address.complement', '')
+      setValue('address.neighborhood', data.bairro)
+      setValue('address.city', data.localidade)
+      setValue('address.state', data.uf)
     } else {
       console.error('Failed to fetch address data:', response.status)
       return null
@@ -59,10 +49,12 @@ export function Address() {
   }
 
   useEffect(() => {
-    if (address.zipCode.length === 9) {
-      getAddress(address.zipCode)
+    const zipCode = cep || ''
+    const zipCodeNumber = zipCode.replace('-', '')
+    if (zipCodeNumber.length === 8) {
+      getAddress(zipCodeNumber)
     }
-  }, [address.zipCode])
+  }, [cep])
 
   return (
     <AddressInfo>
@@ -74,68 +66,65 @@ export function Address() {
         </div>
       </AddressHeader>
       <AddressInputs>
-        <AddressInput
-          type="string"
-          placeholder="CEP"
-          maxLength={9}
-          value={address.zipCode}
-          onChange={(event) => {
-            const rawValue = event.target.value.replace(/\D/g, '')
-            setAddress({ ...address, zipCode: zipCodeMask(rawValue) })
-          }}
-        />
-        <AddressInput
-          type="text"
-          placeholder="Rua"
-          value={address.street}
-          onChange={(event) =>
-            setAddress({ ...address, street: event.target.value })
-          }
-        />
-        <AddressInput
-          type="string"
-          placeholder="Número"
-          value={address.number}
-          onChange={(event) =>
-            setAddress({ ...address, number: event.target.value })
-          }
-        />
-        <div>
+        <InputContainer>
+          <AddressInput
+            type="string"
+            placeholder="CEP"
+            {...register('address.cep')}
+          />
+          {error?.cep && <Error>{error.cep.message}</Error>}
+        </InputContainer>
+        <InputContainer>
           <AddressInput
             type="text"
-            placeholder="Complemento"
-            value={address.complement}
-            onChange={(event) =>
-              setAddress({ ...address, complement: event.target.value })
-            }
+            placeholder="Rua"
+            {...register('address.street')}
           />
-          {address.complement === '' && <em>Opcional</em>}
-        </div>
-        <AddressInput
-          type="text"
-          placeholder="Bairro"
-          value={address.neighborhood}
-          onChange={(event) =>
-            setAddress({ ...address, neighborhood: event.target.value })
-          }
-        />
-        <AddressInput
-          type="text"
-          placeholder="Cidade"
-          value={address.city}
-          onChange={(event) =>
-            setAddress({ ...address, city: event.target.value })
-          }
-        />
-        <AddressInput
-          type="text"
-          placeholder="UF"
-          maxLength={2}
-          value={address.state}
-          onChange={(event) =>
-            setAddress({ ...address, state: event.target.value })
-          }
-        />
+          {error?.street && <Error>{error.street.message}</Error>}
+        </InputContainer>
+        <InputContainer>
+          <AddressInput
+            type="string"
+            placeholder="Número"
+            {...register('address.number')}
+          />
+          {error?.number && <Error>{error.number.message}</Error>}
+        </InputContainer>
+        <InputContainer>
+          <ComplementContainer>
+            <AddressInput
+              type="text"
+              placeholder="Complemento"
+              {...register('address.complement')}
+            />
+            {complement === '' && <em>Opcional</em>}
+          </ComplementContainer>
+        </InputContainer>
+        <InputContainer>
+          <AddressInput
+            type="text"
+            placeholder="Bairro"
+            {...register('address.neighborhood')}
+          />
+          {error?.neighborhood && <Error>{error.neighborhood.message}</Error>}
+        </InputContainer>
+        <InputContainer>
+          <AddressInput
+            type="text"
+            placeholder="Cidade"
+            {...register('address.city')}
+          />
+          {error?.city && <Error>{error.city.message}</Error>}
+        </InputContainer>
+        <InputContainer>
+          <AddressInput
+            type="text"
+            placeholder="UF"
+            maxLength={2}
+            {...register('address.state')}
+          />
+          {error?.state && <Error>{error.state.message}</Error>}
+        </InputContainer>
       </AddressInputs>
     </AddressInfo>
   )

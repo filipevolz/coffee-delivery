@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const CartContainer = styled.div`
+export const CartContainer = styled.form`
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   gap: 2rem;
@@ -41,6 +41,7 @@ export const BtnConfirmOrder = styled.button`
   padding: 14px 0 14px;
   justify-content: center;
   margin-top: 24px;
+  margin-bottom: 1rem;
   background-color: ${(props) => props.theme.colors.yellow};
   color: ${(props) => props.theme.colors.white};
   text-transform: uppercase;

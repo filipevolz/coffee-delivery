@@ -36,7 +36,8 @@ const createOrderSchema = z.object({
 export type CreateOrderFormData = z.infer<typeof createOrderSchema>
 
 export function Cart() {
-  const { cart, coffees, removeFromCart } = useContext(CoffeesContext)
+  const { cart, coffees, removeFromCart, checkoutCart } =
+    useContext(CoffeesContext)
   const {
     register,
     handleSubmit,
@@ -71,7 +72,7 @@ export function Cart() {
   function handleCheckout(data: CreateOrderFormData) {
     SetCheckoutError('')
     if (cart.length > 0) {
-      console.log(data)
+      checkoutCart(data)
     } else {
       SetCheckoutError('Você não possui itens no carrinho.')
     }

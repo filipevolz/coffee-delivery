@@ -72,7 +72,7 @@ export function cartReducer(state: CartState, action: Actions): CartState {
         draft.orders.push(newOrder)
         draft.cart = []
 
-        action.payload.callback('/success')
+        action.payload.callback('/coffee-delivery/success')
       })
 
     default:

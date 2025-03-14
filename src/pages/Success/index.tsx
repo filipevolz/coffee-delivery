@@ -39,10 +39,14 @@ export function Success() {
               </IconItem>
               <div>
                 <p>
-                  Entrega em <span>{order?.address.street}, {order?.address.number}</span>
+                  Entrega em{' '}
+                  <span>
+                    {order?.address.street}, {order?.address.number}
+                  </span>
                 </p>
                 <p>
-                  {order?.address.neighborhood} - {order?.address.city}, {order?.address.state}
+                  {order?.address.neighborhood} - {order?.address.city},{' '}
+                  {order?.address.state}
                 </p>
               </div>
             </InfoBox>
@@ -61,14 +65,17 @@ export function Success() {
               </IconItem>
               <div>
                 <p>Pagamento na entrega</p>
-                <span>{paymentMethodMap[order?.paymentMethod]}</span>
+                <span>
+                  {order?.paymentMethod &&
+                    paymentMethodMap[order.paymentMethod]}
+                </span>
               </div>
             </InfoBox>
           </InfoContainer>
         </Info>
       </SuccessContent>
       <img
-        src="/images/Illustration.svg"
+        src="/coffee-delivery/images/Illustration.svg"
         alt="Illustration"
         style={{ marginTop: '5.3rem' }}
       />
